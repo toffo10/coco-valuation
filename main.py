@@ -131,5 +131,5 @@ if __name__ == '__main__':
     x = PrettyTable()
     x.field_names = ["Class", "AP"]
     for index, value in enumerate(ap_per_category):
-        x.add_row([get_category_name(index), ap_per_category[index]])
+        x.add_row([get_category_name(index), str(round(float(ap_per_category[index]), 3))])
     print(x)
