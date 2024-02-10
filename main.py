@@ -2,15 +2,7 @@ import json
 import numpy as np
 import json
 from prettytable import PrettyTable
-
-# Caricare le predizioni da un file JSON
-with open('predictions_zs.json', 'r') as file:
-    predictions = json.load(file)
-
-# Caricare i ground truths da un file JSON
-with open('ground_truths.json', 'r') as file:
-    ground_truths = json.load(file)
-
+import argparse
 
 # Funzione per calcolare l'IoU
 def bbox_iou(bbox1, bbox2):
@@ -115,6 +107,24 @@ def get_category_name(index):
 
 
 if __name__ == '__main__':
+    # Crea l'oggetto parser
+    parser = argparse.ArgumentParser(description='Imposta i percorsi dei file JSON.')
+
+    # Aggiunge gli argomenti che lo script accetterà
+    parser.add_argument('predictions_path', type=str, help='Predictions path')
+    parser.add_argument('ground_truth_path', type=str, help='Ground truth path')
+
+    # Estrae gli argomenti passati
+    args = parser.parse_args()
+
+    # Caricare le predizioni da un file JSON
+    with open(args.predictions_path, 'r') as file:
+        predictions = json.load(file)
+
+    # Caricare i ground truths da un file JSON
+    with open(args.ground_truth_path, 'r') as file:
+        ground_truths = json.load(file)
+
     ap_per_category = calculate_tp_fp(predictions, ground_truths)
     x = PrettyTable()
     x.field_names = ["Class", "AP"]
