@@ -25,9 +25,9 @@ def bbox_iou(bbox1, bbox2):
 
 
 # Organizzare le predizioni e i ground truths per categoria
-def organize_by_category(data):
+def organize_by_category(items):
     organized_data = {}
-    for item in data:
+    for item in items:
         category = item['category_id']
         if category not in organized_data:
             organized_data[category] = []
@@ -87,7 +87,7 @@ def calculate_tp_fp(iou_threshold=0.5):
             max_precision = max(relevant_precisions) if len(relevant_precisions) > 0 else 0
             precision_at_recall_levels.append(max_precision)
 
-        print(f'Valore per la categoria: {np.mean(precision_at_recall_levels)}')
+        # print(f'Valore per la categoria: {np.mean(precision_at_recall_levels)}')
         ap_per_category[category] = np.mean(precision_at_recall_levels)
 
     return ap_per_category
