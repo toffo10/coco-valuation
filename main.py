@@ -1,8 +1,9 @@
-import json
-import numpy as np
-import json
-from prettytable import PrettyTable
 import argparse
+import json
+
+import numpy as np
+from prettytable import PrettyTable
+
 
 # Funzione per calcolare l'IoU
 def bbox_iou(bbox1, bbox2):
@@ -35,7 +36,7 @@ def organize_by_category(data):
 
 
 # Calcolare TP e FP per ogni categoria
-def calculate_tp_fp(predictions, ground_truths, iou_threshold=0.5):
+def calculate_tp_fp(iou_threshold=0.5):
     predictions_by_category = organize_by_category(predictions)
     ground_truths_by_category = organize_by_category(ground_truths)
 
@@ -92,14 +93,10 @@ def calculate_tp_fp(predictions, ground_truths, iou_threshold=0.5):
     return ap_per_category
 
 
-def get_category_name(index):
-    # Apertura e lettura del file JSON
-    with open('categories.json', 'r') as json_file:
-        data = json.load(json_file)
-
+def get_category_name(i):
     # Ricerca della categoria basata sull'indice/id
     for category in data["categories"]:
-        if category["id"] == index:
+        if category["id"] == i:
             return category["name"]
 
     # Se l'indice non corrisponde a nessuna categoria, si ritorna None o un messaggio di errore
@@ -113,6 +110,7 @@ if __name__ == '__main__':
     # Aggiunge gli argomenti che lo script accetterà
     parser.add_argument('predictions_path', type=str, help='Predictions path')
     parser.add_argument('ground_truth_path', type=str, help='Ground truth path')
+    parser.add_argument('categories', type=str, help='Categories path')
 
     # Estrae gli argomenti passati
     args = parser.parse_args()
@@ -125,7 +123,11 @@ if __name__ == '__main__':
     with open(args.ground_truth_path, 'r') as file:
         ground_truths = json.load(file)
 
-    ap_per_category = calculate_tp_fp(predictions, ground_truths)
+    # Apertura e lettura del file JSON
+    with open(args.categories, 'r') as json_file:
+        data = json.load(json_file)
+
+    ap_per_category = calculate_tp_fp()
     x = PrettyTable()
     x.field_names = ["Class", "AP"]
     for index, value in enumerate(ap_per_category):
